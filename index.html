@@ -13,17 +13,17 @@
 
         body {
             font-family: Arial, sans-serif;
-            background: #eef2f7;
+            background: #edf2f8;
             margin: 0;
-            padding: 40px 20px;
+            padding: 40px;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1250px;
             margin: auto;
             background: white;
             padding: 40px;
-            border-radius: 15px;
+            border-radius: 16px;
             box-shadow: 0 8px 30px rgba(0,0,0,0.10);
         }
 
@@ -31,7 +31,7 @@
             text-align: center;
             color: #243b64;
             font-size: 38px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .subtitle {
@@ -42,13 +42,13 @@
 
         button {
             display: block;
-            margin: 25px auto;
-            padding: 15px 30px;
+            margin: 30px auto;
+            padding: 16px 35px;
             background: #243b64;
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 16px;
+            border-radius: 9px;
+            font-size: 17px;
             cursor: pointer;
         }
 
@@ -58,45 +58,47 @@
 
         #message {
             text-align: center;
-            font-size: 17px;
-            margin: 15px;
-            color: green;
+            font-size: 18px;
+            margin: 20px;
         }
 
         .table-box {
             overflow-x: auto;
-            margin-top: 30px;
+            margin-top: 35px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 650px;
+            min-width: 700px;
         }
 
         th {
             background: #243b64;
             color: white;
-            padding: 18px;
+            padding: 20px;
             font-size: 17px;
         }
 
         td {
-            padding: 16px;
+            padding: 17px;
             text-align: center;
             border-bottom: 1px solid #ddd;
             color: #333;
         }
 
-        tr:hover {
-            background: #eaf2ff;
+        tbody tr:nth-child(even) {
+            background: #f2f6fc;
         }
 
-        .footer {
+        tbody tr:hover {
+            background: #e1ebfa;
+        }
+
+        footer {
             text-align: center;
             color: #777;
-            margin-top: 30px;
-            font-size: 14px;
+            margin-top: 35px;
         }
     </style>
 </head>
@@ -115,7 +117,9 @@
         Load Employee Data
     </button>
 
-    <p id="message">Click the button to load employee details.</p>
+    <p id="message">
+        Click the button to load employee information.
+    </p>
 
     <div class="table-box">
         <table>
@@ -134,114 +138,121 @@
         </table>
     </div>
 
-    <div class="footer">
+    <footer>
         Employee Management System | XML Data Display
-    </div>
+    </footer>
 
 </div>
 
 <script>
 
-    // XML employee information stored in this HTML file
-    const xmlData = `
-    <?xml version="1.0" encoding="UTF-8"?>
-    <employees>
-        <employee>
-            <id>101</id>
-            <name>Rahul Sharma</name>
-            <department>IT</department>
-            <designation>Software Developer</designation>
-            <salary>45000</salary>
-        </employee>
+// XML DATA
+// Do not add <?xml version="1.0"?> inside this string.
 
-        <employee>
-            <id>102</id>
-            <name>Priya Kumar</name>
-            <department>HR</department>
-            <designation>HR Manager</designation>
-            <salary>55000</salary>
-        </employee>
+const xmlData = `<employees>
 
-        <employee>
-            <id>103</id>
-            <name>Arjun Reddy</name>
-            <department>Finance</department>
-            <designation>Accountant</designation>
-            <salary>40000</salary>
-        </employee>
+    <employee>
+        <id>101</id>
+        <name>Rahul Sharma</name>
+        <department>IT</department>
+        <designation>Software Developer</designation>
+        <salary>45000</salary>
+    </employee>
 
-        <employee>
-            <id>104</id>
-            <name>Sneha Patel</name>
-            <department>Marketing</department>
-            <designation>Marketing Executive</designation>
-            <salary>38000</salary>
-        </employee>
+    <employee>
+        <id>102</id>
+        <name>Priya Kumar</name>
+        <department>HR</department>
+        <designation>HR Manager</designation>
+        <salary>55000</salary>
+    </employee>
 
-        <employee>
-            <id>105</id>
-            <name>Vikram Singh</name>
-            <department>IT</department>
-            <designation>System Analyst</designation>
-            <salary>60000</salary>
-        </employee>
-    </employees>
-    `;
+    <employee>
+        <id>103</id>
+        <name>Arjun Reddy</name>
+        <department>Finance</department>
+        <designation>Accountant</designation>
+        <salary>40000</salary>
+    </employee>
 
-    function loadEmployees() {
+    <employee>
+        <id>104</id>
+        <name>Sneha Patel</name>
+        <department>Marketing</department>
+        <designation>Marketing Executive</designation>
+        <salary>38000</salary>
+    </employee>
 
-        // Create XML parser
-        const parser = new DOMParser();
+    <employee>
+        <id>105</id>
+        <name>Vikram Singh</name>
+        <department>IT</department>
+        <designation>System Analyst</designation>
+        <salary>60000</salary>
+    </employee>
 
-        // Convert XML string into XML document
-        const xml = parser.parseFromString(
-            xmlData, "text/xml"
-        );
+</employees>`;
 
-        // Check XML errors
-        if (xml.querySelector("parsererror")) {
-            document.getElementById("message").textContent =
-                "Invalid XML data!";
-            return;
-        }
 
-        // Get employee elements
-        const employees =
-            xml.getElementsByTagName("employee");
+// FUNCTION TO READ XML DATA
+function loadEmployees() {
 
-        // Get table body
-        const table = document.getElementById("employeeData");
+    const parser = new DOMParser();
 
-        // Clear previous data
-        table.innerHTML = "";
+    const xml = parser.parseFromString(
+        xmlData, "application/xml"
+    );
 
-        // Display employee information
-        for (let i = 0; i < employees.length; i++) {
-
-            const emp = employees[i];
-
-            const id = emp.getElementsByTagName("id")[0].textContent;
-            const name = emp.getElementsByTagName("name")[0].textContent;
-            const department = emp.getElementsByTagName("department")[0].textContent;
-            const designation = emp.getElementsByTagName("designation")[0].textContent;
-            const salary = emp.getElementsByTagName("salary")[0].textContent;
-
-            const row = document.createElement("tr");
-
-            [id, name, department, designation, "₹" + salary]
-                .forEach(value => {
-                    const cell = document.createElement("td");
-                    cell.textContent = value;
-                    row.appendChild(cell);
-                });
-
-            table.appendChild(row);
-        }
-
-        // Display success message
+    if (xml.getElementsByTagName("parsererror").length > 0) {
         document.getElementById("message").textContent =
-            employees.length + " employees loaded successfully!";
+            "Error: Invalid XML data!";
+        return;
     }
+
+    const employees = xml.getElementsByTagName("employee");
+
+    const table = document.getElementById("employeeData");
+
+    table.innerHTML = "";
+
+    for (let i = 0; i < employees.length; i++) {
+
+        const emp = employees[i];
+
+        const id = emp.getElementsByTagName("id")[0].textContent;
+        const name = emp.getElementsByTagName("name")[0].textContent;
+        const department = emp.getElementsByTagName("department")[0].textContent;
+        const designation = emp.getElementsByTagName("designation")[0].textContent;
+        const salary = emp.getElementsByTagName("salary")[0].textContent;
+
+        const row = document.createElement("tr");
+
+        const values = [
+            id,
+            name,
+            department,
+            designation,
+            "₹" + salary
+        ];
+
+        values.forEach(value => {
+
+            const cell = document.createElement("td");
+
+            cell.textContent = value;
+
+            row.appendChild(cell);
+
+        });
+
+        table.appendChild(row);
+    }
+
+    document.getElementById("message").textContent =
+        employees.length + " employees loaded successfully!";
+
+    document.getElementById("message").style.color = "green";
+}
 
 </script>
 
