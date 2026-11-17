@@ -1,0 +1,249 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Information System</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #eef2f7;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.10);
+        }
+
+        h1 {
+            text-align: center;
+            color: #243b64;
+            font-size: 38px;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 18px;
+        }
+
+        button {
+            display: block;
+            margin: 25px auto;
+            padding: 15px 30px;
+            background: #243b64;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #4269a8;
+        }
+
+        #message {
+            text-align: center;
+            font-size: 17px;
+            margin: 15px;
+            color: green;
+        }
+
+        .table-box {
+            overflow-x: auto;
+            margin-top: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+        }
+
+        th {
+            background: #243b64;
+            color: white;
+            padding: 18px;
+            font-size: 17px;
+        }
+
+        td {
+            padding: 16px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+            color: #333;
+        }
+
+        tr:hover {
+            background: #eaf2ff;
+        }
+
+        .footer {
+            text-align: center;
+            color: #777;
+            margin-top: 30px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Employee Information System</h1>
+
+    <p class="subtitle">
+        Employee details retrieved from an XML file
+    </p>
+
+    <button onclick="loadEmployees()">
+        Load Employee Data
+    </button>
+
+    <p id="message">Click the button to load employee details.</p>
+
+    <div class="table-box">
+        <table>
+            <thead>
+                <tr>
+                    <th>Employee ID</th>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th>Designation</th>
+                    <th>Salary (₹)</th>
+                </tr>
+            </thead>
+
+            <tbody id="employeeData">
+            </tbody>
+        </table>
+    </div>
+
+    <div class="footer">
+        Employee Management System | XML Data Display
+    </div>
+
+</div>
+
+<script>
+
+    // XML employee information stored in this HTML file
+    const xmlData = `
+    <?xml version="1.0" encoding="UTF-8"?>
+    <employees>
+        <employee>
+            <id>101</id>
+            <name>Rahul Sharma</name>
+            <department>IT</department>
+            <designation>Software Developer</designation>
+            <salary>45000</salary>
+        </employee>
+
+        <employee>
+            <id>102</id>
+            <name>Priya Kumar</name>
+            <department>HR</department>
+            <designation>HR Manager</designation>
+            <salary>55000</salary>
+        </employee>
+
+        <employee>
+            <id>103</id>
+            <name>Arjun Reddy</name>
+            <department>Finance</department>
+            <designation>Accountant</designation>
+            <salary>40000</salary>
+        </employee>
+
+        <employee>
+            <id>104</id>
+            <name>Sneha Patel</name>
+            <department>Marketing</department>
+            <designation>Marketing Executive</designation>
+            <salary>38000</salary>
+        </employee>
+
+        <employee>
+            <id>105</id>
+            <name>Vikram Singh</name>
+            <department>IT</department>
+            <designation>System Analyst</designation>
+            <salary>60000</salary>
+        </employee>
+    </employees>
+    `;
+
+    function loadEmployees() {
+
+        // Create XML parser
+        const parser = new DOMParser();
+
+        // Convert XML string into XML document
+        const xml = parser.parseFromString(
+            xmlData, "text/xml"
+        );
+
+        // Check XML errors
+        if (xml.querySelector("parsererror")) {
+            document.getElementById("message").textContent =
+                "Invalid XML data!";
+            return;
+        }
+
+        // Get employee elements
+        const employees =
+            xml.getElementsByTagName("employee");
+
+        // Get table body
+        const table = document.getElementById("employeeData");
+
+        // Clear previous data
+        table.innerHTML = "";
+
+        // Display employee information
+        for (let i = 0; i < employees.length; i++) {
+
+            const emp = employees[i];
+
+            const id = emp.getElementsByTagName("id")[0].textContent;
+            const name = emp.getElementsByTagName("name")[0].textContent;
+            const department = emp.getElementsByTagName("department")[0].textContent;
+            const designation = emp.getElementsByTagName("designation")[0].textContent;
+            const salary = emp.getElementsByTagName("salary")[0].textContent;
+
+            const row = document.createElement("tr");
+
+            [id, name, department, designation, "₹" + salary]
+                .forEach(value => {
+                    const cell = document.createElement("td");
+                    cell.textContent = value;
+                    row.appendChild(cell);
+                });
+
+            table.appendChild(row);
+        }
+
+        // Display success message
+        document.getElementById("message").textContent =
+            employees.length + " employees loaded successfully!";
+    }
+
+</script>
+
+</body>
+</html>
